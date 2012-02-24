@@ -34,3 +34,13 @@ grails.project.dependency.resolution = {
 		}
 	}
 }
+
+grails.project.dependency.distribution = {
+	localRepository = "/Users/mminella/.m2/repository"
+	remoteRepository(id: "release", url: "http://sonatype.criticalmass.com/nexus/content/repositories/releases/") {
+		authentication username:"releaseartifacts", password:"jQm8G1g47e"
+	}
+	remoteRepository(id: "snapshot", url: "http://sonatype.criticalmass.com/nexus/content/repositories/snapshots/") {
+		authentication username:"deployment", password:"deploy"
+	}
+}
