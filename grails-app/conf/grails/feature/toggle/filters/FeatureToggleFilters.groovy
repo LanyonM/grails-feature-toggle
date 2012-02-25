@@ -11,7 +11,7 @@ class FeatureToggleFilters implements ApplicationContextAware {
 	def filters = {
 		allControllers(controller:'*', action:'*') {
 			before = {
-				def controllers = request.servletContext['controlledActions']
+				def controllers = request.session.servletContext['controlledActions']
 
 				if(controllers != null) {
 					def curAction = actionName
