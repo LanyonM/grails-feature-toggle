@@ -36,8 +36,10 @@ class FeatureToggleFilters implements ApplicationContextAware {
 					if(action != null && !featureToggleService.isFeatureEnabled(action.name)) {
 						if(action.resultRedirect.size() > 0) {
 							redirect(uri: action.resultRedirect)
+							return false;
 						} else {
 							render(status: action.resultStatus)
+							return false;
 						}
 					}
 				}

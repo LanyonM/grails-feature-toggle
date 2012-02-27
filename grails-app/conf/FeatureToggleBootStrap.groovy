@@ -13,7 +13,7 @@ class FeatureToggleBootStrap {
 		grailsApplication.controllerClasses.each{ controller ->
 			def annotation = controller.getClazz().getAnnotation(Feature)
 
-			//			parseActionClosures(controller, annotation, controlledActions)
+			//			parseActionClosures(controller, axnnotation, controlledActions)
 			parseActionMethods(controller, annotation, controlledActions)
 		}
 
