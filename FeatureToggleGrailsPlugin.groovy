@@ -33,23 +33,15 @@ Brief description of the plugin.
 
     def doWithDynamicMethods = { ctx ->
 		
-		FeatureToggleService service = ctx.getBean('featureToggleService')
-		
-		for(controllerClass in application.controllerClasses) {
-			controllerClass.metaClass.withFeature = { String featureName, Closure closure ->
-				if(service.isFeatureEnabled(featureName)) {
-					closure.call()
-				}
-			}
-		}
-		
-		for(serviceClass in application.serviceClasses) {
-			serviceClass.metaClass.withFeature = { String featureName, Closure closure ->
-				if(service.isFeatureEnabled(featureName)) {
-					closure.call()
-				}
-			}
-		}
+  		FeatureToggleService service = ctx.getBean('featureToggleService')
+  		
+  		for(controllerClass in application.controllerClasses) {
+        enhance(controllerClass)
+      }
+  		
+      for(serviceClass in application.serviceClasses) {
+        enhance(serviceClass)
+      }
     }
 
     def doWithApplicationContext = { applicationContext ->
@@ -57,13 +49,30 @@ Brief description of the plugin.
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+      doWithDynamicMethods event.ctx
     }
 
     def onConfigChange = { event ->
         // TODO Implement code that is executed when the project configuration changes.
         // The event is the same as for 'onChange'.
+    }
+
+    private def withFeature = { String featureName, Closure closure ->
+      if(service.isFeatureEnabled(featureName)) {
+        closure.call()
+      }
+    }
+    private def withoutFeature = { String featureName, Closure closure ->
+      if(!service.isFeatureEnabled(featureName)) {
+        closure.call()
+      }
+    }
+    private def featureEnabled = { String featureName ->
+      return service.isFeatureEnabled(featureName)
+    }
+    private void enhance(theClass) {
+      theClass.metaClass.withFeature = withFeature
+      theClass.metaClass.withoutFeature = withoutFeature
+      theClass.metaClass.featureEnabled = featureEnabled
     }
 }

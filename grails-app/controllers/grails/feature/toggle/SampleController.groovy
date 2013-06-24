@@ -7,8 +7,12 @@ class SampleController {
 
 	@Feature(name='featuredSample')
 	def index = {
-		withFeature("sample") { ->
-			log.debug("the feature must be enabled")
-		}
+    log.debug("Is Feature Enabled? ${featureEnabled('sample')}")
+    withFeature('sample') { ->
+      log.debug('the feature must be enabled')
+    }
+    withoutFeature('sample') { ->
+      log.debug('the feature must not be enabled')
+    }
 	}
 }
