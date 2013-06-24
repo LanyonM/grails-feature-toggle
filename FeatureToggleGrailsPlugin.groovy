@@ -49,9 +49,7 @@ Brief description of the plugin.
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+      doWithDynamicMethods event.ctx
     }
 
     def onConfigChange = { event ->
