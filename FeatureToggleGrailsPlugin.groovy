@@ -57,14 +57,18 @@ Brief description of the plugin.
         // The event is the same as for 'onChange'.
     }
 
-    private def withFeature = { String featureName, Closure closure ->
+    private def withFeature = { String featureName, Closure closure, Closure otherwise ->
       if(service.isFeatureEnabled(featureName)) {
         closure.call()
+      } else if(otherwise != null) {
+        otherwise.call()
       }
     }
-    private def withoutFeature = { String featureName, Closure closure ->
+    private def withoutFeature = { String featureName, Closure closure, Closure otherwise ->
       if(!service.isFeatureEnabled(featureName)) {
         closure.call()
+      } else if(otherwise != null) {
+        otherwise.call()
       }
     }
     private def featureEnabled = { String featureName ->
