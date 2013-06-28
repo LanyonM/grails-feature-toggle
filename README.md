@@ -1,5 +1,5 @@
 # Grails Feature Toggles Plugin [![Build Status](https://travis-ci.org/LanyonM/grails-feature-toggle.png?branch=master)](https://travis-ci.org/LanyonM/grails-feature-toggle)
-This is a fork the the recognized [Feature Toggles](http://grails.org/plugin/feature-toggle) plugin.
+This is a fork of the recognized [Feature Toggles](http://grails.org/plugin/feature-toggle) plugin.
 
 # Installation
 
@@ -59,5 +59,8 @@ In the case that ``disableAll`` is set to ``true``, all features will appear dis
 
 You can also download the current config data so you can take the current runtime configuration and install it for additional deployments.
 
-## Plugin Contributions
+# Publishing
+If you would like to publish to an external repo, you can specify ``mavenInfo.groovy`` in the config file as specified [here](http://blog.jeffbeck.info/?p=144).
+
+# Plugin Contributions
 Please use this plugin!  If you encounter issues, please open an issue in GitHub.
