@@ -38,12 +38,13 @@ grails.project.dependency.resolution = {
 	}
 }
 
-grails.project.dependency.distribution = {
-	localRepository = "/Users/mminella/.m2/repository"
-	remoteRepository(id: "release", url: "http://sonatype.criticalmass.com/nexus/content/repositories/releases/") {
-		authentication username:"releaseartifacts", password:"jQm8G1g47e"
-	}
-	remoteRepository(id: "snapshot", url: "http://sonatype.criticalmass.com/nexus/content/repositories/snapshots/") {
-		authentication username:"deployment", password:"deploy"
-	}
+def mavenConfigFile = new File("${basedir}/grails-app/conf/mavenInfo.groovy")
+if (mavenConfigFile.exists()) {
+  def slurpedMavenInfo = new ConfigSlurper().parse(mavenConfigFile.toURI().toURL())
+  slurpedMavenInfo.grails.project.repos.each { k, v ->
+    println "Adding maven info for repo $k"
+    grails.project.repos."$k" = v
+  }
+} else {
+  println "No mavenInfo file found."
 }

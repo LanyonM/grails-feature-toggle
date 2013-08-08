@@ -3,3 +3,7 @@
 /target-eclipse
 grails-feature-toggle-*.zip.sha1
 grails-feature-toggle-*.zip
+stacktrace.log
+
+# repo settings
+grails-app/conf/mavenInfo.groovy
