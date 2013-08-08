@@ -36,11 +36,11 @@ Brief description of the plugin.
   		FeatureToggleService service = ctx.getBean('featureToggleService')
   		
   		for(controllerClass in application.controllerClasses) {
-        enhance(controllerClass)
+        service.enhance(controllerClass)
       }
   		
       for(serviceClass in application.serviceClasses) {
-        enhance(serviceClass)
+        service.enhance(serviceClass)
       }
     }
 
@@ -55,28 +55,5 @@ Brief description of the plugin.
     def onConfigChange = { event ->
         // TODO Implement code that is executed when the project configuration changes.
         // The event is the same as for 'onChange'.
-    }
-
-    private def withFeature = { String featureName, Closure closure, Closure otherwise ->
-      if(service.isFeatureEnabled(featureName)) {
-        closure.call()
-      } else if(otherwise != null) {
-        otherwise.call()
-      }
-    }
-    private def withoutFeature = { String featureName, Closure closure, Closure otherwise ->
-      if(!service.isFeatureEnabled(featureName)) {
-        closure.call()
-      } else if(otherwise != null) {
-        otherwise.call()
-      }
-    }
-    private def featureEnabled = { String featureName ->
-      return service.isFeatureEnabled(featureName)
-    }
-    private void enhance(theClass) {
-      theClass.metaClass.withFeature = withFeature
-      theClass.metaClass.withoutFeature = withoutFeature
-      theClass.metaClass.featureEnabled = featureEnabled
     }
 }

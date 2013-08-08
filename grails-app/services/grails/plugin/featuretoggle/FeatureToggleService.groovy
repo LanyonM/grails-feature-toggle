@@ -45,4 +45,27 @@ class FeatureToggleService {
   void setFeatureEnabled(String feature, boolean enabled) {
     allFeatures()?."${feature}" = enabled
   }
+
+  public def withFeature = { String featureName, Closure closure, Closure otherwise ->
+    if(isFeatureEnabled(featureName)) {
+      closure.call()
+    } else if(otherwise != null) {
+      otherwise.call()
+    }
+  }
+  public def withoutFeature = { String featureName, Closure closure, Closure otherwise ->
+    if(!isFeatureEnabled(featureName)) {
+      closure.call()
+    } else if(otherwise != null) {
+      otherwise.call()
+    }
+  }
+  public def featureEnabled = { String featureName ->
+    return isFeatureEnabled(featureName)
+  }
+  public void enhance(theClass) {
+    theClass.metaClass.withFeature = withFeature
+    theClass.metaClass.withoutFeature = withoutFeature
+    theClass.metaClass.featureEnabled = featureEnabled
+  }
 }
