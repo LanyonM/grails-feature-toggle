@@ -25,15 +25,20 @@ log4j = {
 }
 
 features {
-	sample {
+	controller {
 		enabled = false
 		description = "Annotation based feature at the controller level"
 	}
 
-	featuredSample {
-		enabled = true
-		description = "Annotation based feature at the action level"
-	}
+  action {
+    enabled = true
+    description = "Annotation based feature at the action level"
+  }
+
+  code {
+    enabled = true
+    description = "Annotation based feature at the code level"
+  }
 }
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
