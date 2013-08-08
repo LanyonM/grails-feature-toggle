@@ -27,15 +27,15 @@ class FeatureToggleController {
 	}
 
 	def disable = {
-		featureToggleService.allFeatures()."${params.feature}".enabled = false
-		log.debug featureToggleService.allFeatures()."${params.feature}".enabled
+		featureToggleService.setFeatureEnabled "${params.feature}", false
+		log.debug featureToggleService.isFeatureEnabled("${params.feature}")
 		redirect(action: "list")
 	}
 
 	def enable = {
 		featureToggleService.disableDefaultOverride()
-		featureToggleService.allFeatures()."${params.feature}".enabled = true
-		log.debug featureToggleService.allFeatures()."${params.feature}".enabled
+    featureToggleService.setFeatureEnabled "${params.feature}", false
+    log.debug featureToggleService.isFeatureEnabled("${params.feature}")
 		redirect(action: "list")
 	}
 

@@ -3,6 +3,10 @@ import grails.plugin.featuretoggle.FeatureToggleService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import grails.plugin.feature.toggle.annotations.Feature
+
+import java.lang.reflect.Method
+
 class FeatureToggleFilters implements ApplicationContextAware {
 
 	FeatureToggleService featureToggleService
@@ -11,38 +15,36 @@ class FeatureToggleFilters implements ApplicationContextAware {
 	def filters = {
 		allControllers(controller:'*', action:'*') {
 			before = {
-				def controllers = request.session.servletContext['controlledActions']
+        def artefact = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
+        def controller = applicationContext.getBean(artefact.clazz.name)
+        def annotation = controller.class.getAnnotation(Feature)
+        
+        if(annotation != null && !featureToggleService.isFeatureEnabled(annotation.name())) {
+          if(annotation.responseRedirect().size() > 0) {
+            redirect(uri: annotation.responseRedirect())
+            return false;
+          } else {
+            render(status: annotation.responseStatus())
+            return false;
+          }
+        }
 
-				if(controllers != null) {
-					def curAction = actionName
+        Method[] methods = controller.class.getMethods()
+        methods.each{ method ->
 
-					// In the case of the action not being specified (default action) we need to look up
-					// if it was configured in the controller or it is using the convention 'index'
-					if(curAction == null) {
-						def artefact = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
-
-						def bean = applicationContext.getBean(artefact.clazz.name)
-						def metaProperty = bean.metaClass.getMetaProperty("defaultAction")
-
-						if(metaProperty) {
-							curAction = bean.defaultAction
-						} else {
-							curAction = 'index'
-						}
-					}
-
-					def action = controllers[controllerName?.toLowerCase() + '.' + curAction?.toLowerCase()]
-
-					if(action != null && !featureToggleService.isFeatureEnabled(action.name)) {
-						if(action.resultRedirect.size() > 0) {
-							redirect(uri: action.resultRedirect)
-							return false;
-						} else {
-							render(status: action.resultStatus)
-							return false;
-						}
-					}
-				}
+          if(method.name == actionName) {
+            def methodAnnotation = method.getAnnotation Feature
+            if(methodAnnotation != null && !featureToggleService.isFeatureEnabled(methodAnnotation.name())) {
+              if(methodAnnotation.responseRedirect().size() > 0) {
+                redirect(uri: methodAnnotation.responseRedirect())
+                return false;
+              } else {
+                render(status: methodAnnotation.responseStatus())
+                return false;
+              }
+            }
+          }
+        }
 			}
 		}
 	}

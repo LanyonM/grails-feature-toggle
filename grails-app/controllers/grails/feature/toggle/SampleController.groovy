@@ -6,7 +6,7 @@ import grails.plugin.feature.toggle.annotations.Feature
 class SampleController {
 
 	@Feature(name='featuredSample')
-	def index = {
+	def index() {
 		withFeature("sample") { ->
 			log.debug("the feature must be enabled")
 		}
