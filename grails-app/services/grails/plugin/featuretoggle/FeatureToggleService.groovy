@@ -1,45 +1,48 @@
 package grails.plugin.featuretoggle
 
-//import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 class FeatureToggleService {
 
-	def grailsApplication
+	GrailsApplication grailsApplication
 
-	static transactional = false
+	static boolean transactional = false
 
 	def allFeatures() {
 		grailsApplication.config.features.findAll { it.key != "disableAll" }
 	}
 
-	def featuresDisabled() {
+	boolean featuresDisabled() {
 		return grailsApplication.config.features?.disableAll == true && grailsApplication.config.features?.disableAll != false
 	}
 
-	def disableDefaultOverride() {
+	void disableDefaultOverride() {
 		grailsApplication.config.features?.disableAll = false
 	}
 
-	def isFeatureEnabled(def feature) {
+  boolean isFeatureEnabled(String feature) {
+    log.debug("checking to see if feature '${feature}' is enabled...")
+    if(featuresDisabled()) {
+      log.debug("All features are toggled off; returing false.")
+      return false
+    }
 
-		def isFeatureEnabled = true
+    boolean isFeatureEnabled = true
 
-		if(featuresDisabled()) {
-			log.debug("all features toggled off")
-			return false
-		}
+    def featureConfig = allFeatures()?."${feature}"
 
-		log.debug("checking to see if feature '${feature}' is enabled...")
+    if(featureConfig) {
 
-		def featureConfig = allFeatures()?."${feature}"
+      isFeatureEnabled = (featureConfig.enabled.getClass() == groovy.util.ConfigObject) ? true : featureConfig.enabled
 
-		if(featureConfig) {
+      log.debug("Feature is ${isFeatureEnabled ? 'enabled' : 'disabled'}; returing ${isFeatureEnabled}.")
+    } else {
+      log.debug("Feature not found; returing true by default.")
+    }
 
-			isFeatureEnabled = (featureConfig.enabled.getClass() == groovy.util.ConfigObject) ? true : featureConfig.enabled
-
-			log.debug("feature is ${isFeatureEnabled ? 'enabled' : 'disabled'} - (${isFeatureEnabled})")
-		}
-
-		isFeatureEnabled
-	}
+    return isFeatureEnabled
+  }
+  void setFeatureEnabled(String feature, boolean enabled) {
+    allFeatures()?."${feature}" = enabled
+  }
 }
