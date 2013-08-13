@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
 		// runtime 'mysql:mysql-connector-java:5.1.13'
 	}
 	plugins {
-		build(":release:1.0.0") {
+		build(":release:2.2.1") {
 			export = false
 		}
 	}
