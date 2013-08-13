@@ -26,7 +26,7 @@ log4j = {
 
 features {
 	controller {
-		enabled = false
+		enabled = true
 		description = "Annotation based feature at the controller level"
 	}
 
