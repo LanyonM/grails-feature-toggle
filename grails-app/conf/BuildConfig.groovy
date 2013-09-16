@@ -48,3 +48,15 @@ if (mavenConfigFile.exists()) {
 } else {
   println "No mavenInfo file found."
 }
+
+grails.project.repos.default = 'cmSonatype'
+
+def buildConfigFile = new File("${userHome}/.grails/MyConfig.groovy")
+if (buildConfigFile.exists()) {
+  println "Processing external build config at $buildConfigFile"
+  def slurpedBuildConfig = new ConfigSlurper().parse(buildConfigFile.toURL())
+  slurpedBuildConfig.grails.project.repos.each { k, v ->
+    println "Adding maven info for repo $k"
+    grails.project.repos."$k" = v
+  }
+}
