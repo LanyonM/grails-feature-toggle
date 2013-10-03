@@ -10,9 +10,11 @@ grails.project.dependency.resolution = {
 	}
 	log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 	repositories {
-		grailsPlugins()
-		grailsHome()
-		grailsCentral()
+    grailsPlugins()
+    grailsHome()
+    grailsCentral()
+    mavenLocal()
+    mavenCentral()
 
 		// uncomment the below to enable remote dependency resolution
 		// from public Maven repositories
@@ -24,23 +26,37 @@ grails.project.dependency.resolution = {
 		//mavenRepo "http://repository.jboss.com/maven2/"
 	}
 	dependencies {
+    runtime 'org.eclipse.jdt.core.compiler:ecj:3.7.2'
 		// specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
 		// runtime 'mysql:mysql-connector-java:5.1.13'
 	}
 	plugins {
-		build(":release:1.0.0") {
+		build(":release:2.2.1") {
 			export = false
 		}
 	}
 }
 
-grails.project.dependency.distribution = {
-	localRepository = "/Users/mminella/.m2/repository"
-	remoteRepository(id: "release", url: "http://sonatype.criticalmass.com/nexus/content/repositories/releases/") {
-		authentication username:"releaseartifacts", password:"jQm8G1g47e"
-	}
-	remoteRepository(id: "snapshot", url: "http://sonatype.criticalmass.com/nexus/content/repositories/snapshots/") {
-		authentication username:"deployment", password:"deploy"
-	}
+def mavenConfigFile = new File("${basedir}/grails-app/conf/mavenInfo.groovy")
+if (mavenConfigFile.exists()) {
+  def slurpedMavenInfo = new ConfigSlurper().parse(mavenConfigFile.toURI().toURL())
+  slurpedMavenInfo.grails.project.repos.each { k, v ->
+    println "Adding maven info for repo $k"
+    grails.project.repos."$k" = v
+  }
+} else {
+  println "No mavenInfo file found."
+}
+
+grails.project.repos.default = 'cmSonatype'
+
+def buildConfigFile = new File("${userHome}/.grails/MyConfig.groovy")
+if (buildConfigFile.exists()) {
+  println "Processing external build config at $buildConfigFile"
+  def slurpedBuildConfig = new ConfigSlurper().parse(buildConfigFile.toURL())
+  slurpedBuildConfig.grails.project.repos.each { k, v ->
+    println "Adding maven info for repo $k"
+    grails.project.repos."$k" = v
+  }
 }

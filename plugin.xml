@@ -1,0 +1,30 @@
+<plugin name='feature-toggle' version='0.18-SNAPSHOT' grailsVersion='1.3.7 &gt; *'>
+  <author>Conor Sullivan</author>
+  <authorEmail>conors@criticalmass.com</authorEmail>
+  <title>Enable and disable controllers, actions, and blocks of code, using toggles which can be flipped at runtime.</title>
+  <description>\
+
+</description>
+  <documentation>http://grails.org/plugin/grails-feature-toggle</documentation>
+  <type>FeatureToggleGrailsPlugin</type>
+  <resources>
+    <resource>grails.feature.toggle.filters.FeatureToggleFilters</resource>
+    <resource>grails.feature.toggle.FeatureToggleController</resource>
+    <resource>grails.feature.toggle.SampleController</resource>
+    <resource>grails.plugin.featuretoggle.FeatureToggleService</resource>
+    <resource>grails.plugin.featuretoggle.ToggleTagLib</resource>
+    <resource>Result</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies>
+    <runtime>
+      <dependency group='org.eclipse.jdt.core.compiler' name='ecj' version='3.7.2' />
+    </runtime>
+  </dependencies>
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

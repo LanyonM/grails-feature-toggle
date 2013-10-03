@@ -1,45 +1,102 @@
 package grails.plugin.featuretoggle
 
-//import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.plugin.feature.toggle.Feature
 
 class FeatureToggleService {
 
-	def grailsApplication
+	GrailsApplication grailsApplication
 
-	static transactional = false
+	static boolean transactional = false
+  Map<String, Feature> features
+  boolean disableAll
+
+  void loadFeatures() {
+    features = new HashMap<String, Feature>();
+    grailsApplication.config.features.each { Map.Entry<String, ConfigObject> feature ->
+      features.put(feature.getKey(), new Feature(feature));
+    }
+  }
 
 	def allFeatures() {
-		grailsApplication.config.features.findAll { it.key != "disableAll" }
+    if(!features) {
+      loadFeatures()
+    }
+    return features
 	}
 
-	def featuresDisabled() {
-		return grailsApplication.config.features?.disableAll == true && grailsApplication.config.features?.disableAll != false
+	boolean featuresDisabled() {
+    if(!features) {
+      loadFeatures()
+    }
+		return disableAll
 	}
 
-	def disableDefaultOverride() {
-		grailsApplication.config.features?.disableAll = false
-	}
+  void disableDefaultOverride() {
+    disableAll = false
+  }
 
-	def isFeatureEnabled(def feature) {
+  boolean isFeatureEnabled(String feature) {
+    if(!features) {
+      loadFeatures()
+    }
+    //log.debug("checking to see if feature '${feature}' is enabled...")
+    if(disableAll) {
+      //log.debug("All features are toggled off; returing false.")
+      return false
+    }
 
-		def isFeatureEnabled = true
+    boolean isFeatureEnabled = true
 
-		if(featuresDisabled()) {
-			log.debug("all features toggled off")
-			return false
-		}
+    def featureConfig = features[feature]
 
-		log.debug("checking to see if feature '${feature}' is enabled...")
+    if(featureConfig) {
 
-		def featureConfig = allFeatures()?."${feature}"
+      isFeatureEnabled = featureConfig.enabled
 
-		if(featureConfig) {
+      //log.debug("Feature is ${isFeatureEnabled ? 'enabled' : 'disabled'}; returing ${isFeatureEnabled}.")
+    } else {
+      //log.debug("Feature not found; returing true by default.")
+    }
 
-			isFeatureEnabled = (featureConfig.enabled.getClass() == groovy.util.ConfigObject) ? true : featureConfig.enabled
+    return isFeatureEnabled
+  }
+  void setFeatureEnabled(String feature, boolean enabled) {
+    features[feature].enabled = enabled
+  }
 
-			log.debug("feature is ${isFeatureEnabled ? 'enabled' : 'disabled'} - (${isFeatureEnabled})")
-		}
-
-		isFeatureEnabled
-	}
+  public def withFeature = { String featureName, Closure... closure ->
+    if(closure.length < 1 || closure.length > 2) {
+      throw new IllegalArgumentException("withFeature takes one or two closures as an argument.  You gave ${closure.length}")
+    }
+    if(isFeatureEnabled(featureName)) {
+      closure[0].call()
+    } else if (closure.length > 1) {
+      closure[1].call()
+    }
+  }
+  public def withoutFeature = { String featureName, Closure... closure ->
+    if(closure.length < 1 || closure.length > 2) {
+      throw new IllegalArgumentException("withoutFeature takes one or two closures as an argument.  You gave ${closure.length}")
+    }
+    if(!isFeatureEnabled(featureName)) {
+      closure[0].call()
+    } else if(closure.length > 1) {
+      closure[1].call()
+    }
+  }
+  public def featureEnabled = { String featureName ->
+    return isFeatureEnabled(featureName)
+  }
+  public void enhance(theClass) {
+    theClass.metaClass.withFeature = withFeature
+    theClass.metaClass.withoutFeature = withoutFeature
+    theClass.metaClass.featureEnabled = featureEnabled
+  }
+  public void enhanceMock(mock) {
+    int max = 2147483646
+    mock.demand.withFeature(0..max, withFeature)
+    mock.demand.withoutFeature(0..max, withoutFeature)
+    mock.demand.featureEnabled(0..max, featureEnabled)
+  }
 }
