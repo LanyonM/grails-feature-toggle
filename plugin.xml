@@ -1,4 +1,4 @@
-<plugin name='feature-toggle' version='0.18-SNAPSHOT' grailsVersion='1.3.7 &gt; *'>
+<plugin name='feature-toggle' version='0.18' grailsVersion='1.3.7 &gt; *'>
   <author>Conor Sullivan</author>
   <authorEmail>conors@criticalmass.com</authorEmail>
   <title>Enable and disable controllers, actions, and blocks of code, using toggles which can be flipped at runtime.</title>
