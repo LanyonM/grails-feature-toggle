@@ -2,7 +2,7 @@ import grails.plugin.featuretoggle.FeatureToggleService
 
 class FeatureToggleGrailsPlugin {
 	// the plugin version
-	def version = "0.5-SNAPSHOT"
+	def version = "0.18"
 	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "1.3.7 > *"
 	// the other plugins this plugin depends on
@@ -13,11 +13,11 @@ class FeatureToggleGrailsPlugin {
 	]
 
 	// TODO Fill in these fields
-	def author = "Your name"
-	def authorEmail = ""
-	def title = "Plugin summary/headline"
+	def author = "Conor Sullivan"
+	def authorEmail = "conors@criticalmass.com"
+	def title = "Enable and disable controllers, actions, and blocks of code, using toggles which can be flipped at runtime."
 	def description = '''\\
-Brief description of the plugin.
+
 '''
 
 	// URL to the plugin's documentation

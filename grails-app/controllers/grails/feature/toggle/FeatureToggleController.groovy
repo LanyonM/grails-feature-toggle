@@ -13,7 +13,7 @@ class FeatureToggleController {
 			json {
 				render(contentType: "application/json") {
 					features {
-						toggles.keySet().each { featureName ->
+						toggles.keySet().sort({ a, b -> a?.name <=> b?.name}).each { featureName ->
 							feature(name: featureName, enabled: featureToggleService.isFeatureEnabled(featureName), description: features[featureName].description)
 						}
 					}
@@ -33,8 +33,9 @@ class FeatureToggleController {
 	}
 
 	def enable = {
+   log.debug 'enabling feature'
 		featureToggleService.disableDefaultOverride()
-    featureToggleService.setFeatureEnabled "${params.feature}", false
+    featureToggleService.setFeatureEnabled "${params.feature}", true
     log.debug featureToggleService.isFeatureEnabled("${params.feature}")
 		redirect(action: "list")
 	}
