@@ -23,7 +23,7 @@ class FeatureToggleFilters implements ApplicationContextAware {
 						redirect(uri: annotation.responseRedirect())
 						return false
 					} else {
-						render(status: annotation.responseStatus())
+						response.sendError(annotation.responseStatus())
 						return false
 					}
 				}
@@ -36,7 +36,7 @@ class FeatureToggleFilters implements ApplicationContextAware {
 								redirect(uri: methodAnnotation.responseRedirect())
 								return false
 							} else {
-                response.sendError(404)
+                response.sendError(annotation.responseStatus())
 								return false
 							}
 						}
