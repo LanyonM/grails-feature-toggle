@@ -4,6 +4,7 @@ package grails.plugin.featuretoggle
 
 class ToggleTagLib {
 	def featureToggleService
+  static returnObjectForTags = ['hasFeature']
 
   /**
    * Only displays content if a feature is enabled, as configured in Config.groovy
@@ -16,6 +17,12 @@ class ToggleTagLib {
   def withFeature = { attrs, body ->
 
     def feature = attrs.feature
+
+    if(feature) {
+      pageScope.lastFeatureToggle = feature
+    } else {
+      feature = pageScope.lastFeatureToggle
+    }
 
     if(featureToggleService.isFeatureEnabled(feature)) {
       out << body()
@@ -31,6 +38,13 @@ class ToggleTagLib {
   def withoutFeature = { attrs, body ->
 
     def feature = attrs.feature
+
+    if(feature) {
+      pageScope.lastFeatureToggle = feature
+    } else {
+      feature = pageScope.lastFeatureToggle
+    }
+
 
     if(!featureToggleService.isFeatureEnabled(feature)) {
       out << body()
@@ -54,7 +68,19 @@ class ToggleTagLib {
    *
    * @attr feature REQUIRED the name of the feature
    */
-	def featureEnabled = { attrs ->
-		out << featureToggleService.isFeatureEnabled(attrs.feature)
-	}
+  @Deprecated
+  def hasFeature = { attrs ->
+    return featureToggleService.isFeatureEnabled(attrs.feature)
+  }
+  /**
+   * Evaluates to 'true' (a String, not a boolean) when a feature is enabled, 'false' (again, a String, not a boolean) otherwise.
+   *
+   * Note: this tag returns a String, not a boolean.
+   *
+   * @attr feature REQUIRED the name of the feature
+   */
+  @Deprecated
+  def featureEnabled = { attrs ->
+    out << featureToggleService.isFeatureEnabled(attrs.feature) ? 'true' : 'false'
+  }
 }

@@ -85,18 +85,18 @@ class FeatureToggleService {
       closure[1].call()
     }
   }
-  public def featureEnabled = { String featureName ->
-    return isFeatureEnabled(featureName)
+  public def hasFeature = { feature ->
+    return isFeatureEnabled(feature)
   }
   public void enhance(theClass) {
     theClass.metaClass.withFeature = withFeature
     theClass.metaClass.withoutFeature = withoutFeature
-    theClass.metaClass.featureEnabled = featureEnabled
+    theClass.metaClass.hasFeature = hasFeature
   }
   public void enhanceMock(mock) {
     int max = 2147483646
     mock.demand.withFeature(0..max, withFeature)
     mock.demand.withoutFeature(0..max, withoutFeature)
-    mock.demand.featureEnabled(0..max, featureEnabled)
+    mock.demand.hasFeature(0..max, hasFeature)
   }
 }
