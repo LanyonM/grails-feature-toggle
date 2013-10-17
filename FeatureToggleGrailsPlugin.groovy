@@ -2,7 +2,7 @@ import grails.plugin.featuretoggle.FeatureToggleService
 
 class FeatureToggleGrailsPlugin {
 	// the plugin version
-	def version = "0.19-SNAPSHOT-1i"
+	def version = "0.20"
 	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "1.3.7 > *"
 	// the other plugins this plugin depends on
