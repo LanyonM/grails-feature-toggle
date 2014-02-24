@@ -37,7 +37,11 @@ features {
 
   code {
     enabled = true
-    description = "Annotation based feature at the code level"
+    description = "Feature at the code level"
+  }
+  gsp {
+    enabled = true
+    description = "Feature at the gsp level"
   }
 }
 grails.views.default.codec="none" // none, html, base64

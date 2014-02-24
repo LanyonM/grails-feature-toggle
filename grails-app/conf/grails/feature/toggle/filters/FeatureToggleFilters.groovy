@@ -18,13 +18,12 @@ class FeatureToggleFilters implements ApplicationContextAware {
 				def artefact = grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName)
 				def controller = applicationContext.getBean(artefact.clazz.name)
 				def annotation = controller.class.getAnnotation(Feature)
-
-				if (annotation != null && !featureToggleService.isFeatureEnabled(annotation.name())) {
+				if (annotation != null && !passesTests(annotation)) {
 					if (annotation.responseRedirect().size() > 0) {
 						redirect(uri: annotation.responseRedirect())
 						return false
 					} else {
-						render(status: annotation.responseStatus())
+						response.sendError(annotation.responseStatus())
 						return false
 					}
 				}
@@ -32,12 +31,12 @@ class FeatureToggleFilters implements ApplicationContextAware {
 				Method[] methods = controller.class.getMethods().each { method ->
 					if (method.name == actionName) {
 						def methodAnnotation = method.getAnnotation(Feature)
-						if (methodAnnotation != null && !featureToggleService.isFeatureEnabled(methodAnnotation.name())) {
+						if (methodAnnotation != null && !passesTests(methodAnnotation)) {
 							if (methodAnnotation.responseRedirect().size() > 0) {
 								redirect(uri: methodAnnotation.responseRedirect())
 								return false
 							} else {
-								render(status: methodAnnotation.responseStatus())
+                response.sendError(annotation.responseStatus())
 								return false
 							}
 						}
@@ -46,4 +45,27 @@ class FeatureToggleFilters implements ApplicationContextAware {
 			}
 		}
 	}
+
+  private boolean passesTests(annotation) {
+    def name = annotation.name()
+    if(name && name != Feature.NULL && !featureToggleService.isFeatureEnabled(annotation.name())) {
+      return false
+    }
+
+    String[] with = annotation.with()
+    for(def feature:with) {
+      if(!featureToggleService.isFeatureEnabled(feature)) {
+        return false
+      }
+    }
+
+    String[] without = annotation.without()
+    for(def feature:without) {
+      if(featureToggleService.isFeatureEnabled(feature)) {
+        return false
+      }
+    }
+
+    return true
+  }
 }
