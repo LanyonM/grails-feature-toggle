@@ -36,6 +36,9 @@ class SampleControllerTests {
 		}
 		featureToggleService = applicationContext.getBean('featureToggleService')
 		featureToggleService.grailsApplication = grailsApplication
+		// this is required because Grails 2.0.x doesn't inject the service into the mocked filter
+		def featureToggleFilters = applicationContext.getBean('grails.feature.toggle.filters.FeatureToggleFilters')
+		featureToggleFilters.featureToggleService = featureToggleService
 
 		controller = new SampleController()
 		/*controllerMock.demand.static.withFeature { String featureName, Closure closure ->
