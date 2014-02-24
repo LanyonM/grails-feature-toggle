@@ -5,7 +5,7 @@ This is a fork of the recognized [Feature Toggles](http://grails.org/plugin/feat
 
     grails install-plugin feature-toggle
 
-Dependency info: ``compile ":feature-toggle:0.19-SNAPSHOT"``.
+Dependency info: ``compile ":feature-toggle:0.22"``.
 
 # Description
 The feature toggles plugin provides Tag Libraries and dynamic methods to implement configurable features within the Grails application. [Feature Toggles](http://martinfowler.com/bliki/FeatureToggle.html) are a pattern proposed by Martin Fowler as an alternative to feature branching.
@@ -25,18 +25,18 @@ The plugin provides multiple facilities to encapsulate functionality in the appl
         <h1>Let's just stay in bed today...</h1>
     </g:withoutFeature>
 
-And you can use both together to have separate-but-similar functionality
+And you can use both together to have separate-but-similar functionality, like an if/else statement.  The ``feature="..."`` attribute is optional on the second tag.
 
     <g:withFeature feature="myNiftyFeature">
         <h1>Hello World</h1>
     </g:withFeature>
-    <g:withoutFeature feature="myNiftyFeature">
+    <g:withoutFeature>
         <h1>Let's just stay in bed today...</h1>
     </g:withoutFeature>
 
-If you want to have a boolean test for the feature, use ``featureEnabled()``.  Please note that this tag returns a String ('true' or 'false') rather than a boolean, so you have to test for equality to 'true'.
+If you want to have a boolean test for the feature, use ``featureEnabled()``.
 
-	<div class="${g.featureEnabled(feature: 'myNiftyFeature') == 'true' ? 'feature-on' : 'feature-off'}"></div>
+	<div class="${g.featureEnabled(feature: 'myNiftyFeature') ? 'feature-on' : 'feature-off'}"></div>
 	<input type="hidden" name="feature-enabled-input" value="${g.featureEnabled(feature: 'myNiftyFeature')}"></input>
 
 
@@ -102,6 +102,10 @@ If you can't or don't want to use Spring bean injection in a class, then you can
 
 As of Version 0.2, We now support the ability to toggle controller class and actions through the grails.feature.toggle.annotations.Feature annotation.  (This part can be a bit messy, so make sure to test thoroughly.)  When the feature is not enabled, the action will send an error code (404 by default).  You can also optionally set a responseStatus (again, 404 by default) and/or a responseRedirect.  
 
+    import grails.plugin.feature.toggle.annotations.Feature
+    
+    …
+    
     @Feature(name="myNiftyFeature", responseStatus=404, responseRedirect="/foo/bar")
     class MyController {
         @Feature(name="myNiftyFeature2", responseStatus=404, responseRedirect="/foo/bar")
