@@ -68,7 +68,6 @@ class ToggleTagLib {
    *
    * @attr feature REQUIRED the name of the feature
    */
-  @Deprecated
   def hasFeature = { attrs ->
     return featureToggleService.isFeatureEnabled(attrs.feature)
   }
