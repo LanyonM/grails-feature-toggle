@@ -13,8 +13,8 @@ class FeatureToggleGrailsPlugin {
 	]
 
 	// TODO Fill in these fields
-	def author = "Conor Sullivan"
-	def authorEmail = "conors@criticalmass.com"
+	def author = "Olivia Witt"
+	def authorEmail = "oliviaw@criticalmass.com"
 	def title = "Enable and disable controllers, actions, and blocks of code, using toggles which can be flipped at runtime."
 	def description = '''\\
 

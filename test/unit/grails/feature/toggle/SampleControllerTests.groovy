@@ -20,7 +20,7 @@ import groovy.mock.interceptor.StubFor
  * This test is actually used to test the FeatureToggleFilters implementation by
  * testing the SampleController with that filter.
  *
- * @author mlanyon, conors
+ * @author mlanyon, oliviaw
  */
 @TestFor(SampleController)
 @Mock(FeatureToggleFilters)
